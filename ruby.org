@@ -159,3 +159,29 @@ p info[:代表作]
 : 字: 太白
 : 号: 青莲居士
 : 代表作: ["蜀道难", "忆秦娥"]
+
+* 正则表达式 (Regular Expression)
+
+#+BEGIN_SRC ruby
+p (/cde/ =~ "abcdefg")
+p (/ruby/ =~ "I am learning Ruby.")
+p (/ruby/i =~ "I am learning Ruby.")
+#+END_SRC
+
+#+RESULTS:
+: 2
+: nil
+: 14
+
+#+BEGIN_SRC ruby
+  names = ["小林", "林", "红叶", "岩雀"]
+  names.each do |name|
+    if /林/ =~ name
+      puts name
+    end
+  end
+#+END_SRC
+
+#+RESULTS:
+: 小林
+: 林
