@@ -319,3 +319,50 @@ ruby simple_grep.rb line simple_grep.rb
 : file.each_line do |line|
 :   if pattern =~ line
 :     print line
+
+* 方法
+
+#+BEGIN_SRC ruby
+  def hello
+    puts "Hello, Ruby!"
+  end
+
+hello()
+#+END_SRC
+
+#+RESULTS:
+: Hello, Ruby!
+
+* 加载其它 Ruby 文件
+
+#+BEGIN_SRC ruby :tangle foo.rb
+  def foo
+    puts "Foo Bar Baz"
+  end
+#+END_SRC
+
+好吧，可以不用设置 Load Path 了，直接写全路径：
+
+#+BEGIN_SRC ruby
+require "./foo"
+foo
+#+END_SRC
+
+#+RESULTS:
+: Foo Bar Baz
+
+另外用 require 可以省略扩展名 ~.rb~
+
+* PP (Pretty-Print 的 p 方法)
+
+注意这个例子不好。
+
+#+BEGIN_SRC ruby
+require "pp"
+
+info = {:名 => "李白", :字 => "太白", :号 => "青莲居士", :代表作 => ["蜀道难", "忆秦娥"]}
+pp info
+#+END_SRC
+
+#+RESULTS:
+: {:名=>"李白", :字=>"太白", :号=>"青莲居士", :代表作=>["蜀道难", "忆秦娥"]}
