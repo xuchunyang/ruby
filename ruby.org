@@ -531,3 +531,35 @@ pp info
 : a = 1, b = 2
 : 1234
 
+* 对象的同一性
+
+每一个对象都有 object_id
+
+| equal? | 相同的 object_id          |
+| ==     | 值相同（不区分 1 和 1.0） |
+| eql?   | 值相同（区分 1 和 1.0）   |
+
+#+BEGIN_SRC ruby
+s1 = "foo"
+s2 = s1
+s3 = "foo"
+p s1.object_id, s2.object_id, s3.object_id
+p s1.equal?(s2)
+p s1.equal?(s3)
+#+END_SRC
+
+#+RESULTS:
+: 47442501488500
+: 47442501488500
+: 47442501488480
+: true
+: false
+
+#+BEGIN_SRC ruby
+p 1 == 1.0
+p 1.eql?(1.0)
+#+END_SRC
+
+#+RESULTS:
+: true
+: false
