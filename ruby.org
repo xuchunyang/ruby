@@ -442,6 +442,224 @@ hello()
 #+RESULTS:
 : Hello, Ruby!
 
+** 方法有三类
+
+1. 实例方法
+2. 类方法
+3. 函数式方法（不需要接收者的方法，如 print, sleep）
+
+| 方法类型   | 接受者 | 举例                  | 标记                  |
+|------------+--------+-----------------------+-----------------------|
+| 实例方法   | 实例   | "abc".size            | String#size           |
+| 类方法     | 类     | Time.now 或 Time::now | Time.now 或 Time::now |
+| 函数式方法 | 无     | print "hi"            |                       |
+
+#+BEGIN_SRC ruby
+  # 1. 实例方法
+  p "1, 2, 3".split(",")
+  p [1, 2, 3].index(3)
+  p 100.to_s
+
+  # 2. 类方法
+
+  text = File.read("cal.txt")
+  p text.split("\n")[0]
+  p Time.now, Time::now
+  p Array["a", "b", "c"]
+
+  # 3. 函数式
+  print "Hello"
+  sleep(3)
+#+END_SRC
+
+#+RESULTS:
+: ["1", " 2", " 3"]
+: 2
+: "100"
+: "      六月 2017         "
+: 2017-06-23 23:03:29 +0800
+: 2017-06-23 23:03:29 +0800
+: ["a", "b", "c"]
+: Hello
+
+** 方法的定义
+
+*** 参数表
+
+一个参数
+
+#+BEGIN_SRC ruby
+  def say_hi(name)
+    puts "Hi, #{name}!"
+  end
+
+  say_hi("Ruby")
+#+END_SRC
+
+#+RESULTS:
+: Hi, Ruby!
+
+没有或者一个参数（AKA 可选参数）
+
+#+BEGIN_SRC ruby
+  def say_hi(name="Ruby")
+    puts "Hi, #{name}!"
+  end
+
+  say_hi()
+  say_hi("Emacs")
+#+END_SRC
+
+#+RESULTS:
+: Hi, Ruby!
+: Hi, Emacs!
+
+零到 N 个参数：
+
+#+BEGIN_SRC ruby
+  def sum(*nums)
+    sum = 0
+    for i in nums
+      sum += i
+    end
+    sum
+  end
+
+  p sum(1, 2, 3)
+  p sum
+#+END_SRC
+
+#+RESULTS:
+: 6
+: 0
+
+一到 N 个参数：
+
+#+BEGIN_SRC ruby
+  def sum (init, *nums)
+    sum = init
+    for i in nums
+      sum += i
+    end
+    sum
+  end
+
+  p sum(100, 1, 2, 3)
+#+END_SRC
+
+#+RESULTS:
+: 106
+
+二到 N 个参数
+
+#+BEGIN_SRC ruby
+  def sum(init, *nums, final)
+    sum = init
+    for i in nums
+      sum += i
+    end
+    sum + final
+  end
+
+  p sum(100, 1, 2, 3, 900)
+#+END_SRC
+
+#+RESULTS:
+: 1006
+
+**** 关键词参数
+
+#+BEGIN_SRC ruby
+  def area(x: 0, y: 0)
+    x * y
+  end
+
+  p area(x: 3, y: 4)
+  p area(y: 4, x: 3)
+#+END_SRC
+
+#+RESULTS:
+: 12
+: 12
+
+使用 ** NAME 可以把多余的关键词参数保存到一个 Hash 中
+
+#+BEGIN_SRC ruby
+  def f(x: 0, **args)
+    p [x, args]
+  end
+
+  f(x: 1)
+  f(x: 1, y: 2, z: 3)
+#+END_SRC
+
+#+RESULTS:
+: [1, {}]
+: [1, {:y=>2, :z=>3}]
+
+可以把一个 Hash 值当作参数传进去
+
+#+BEGIN_SRC ruby
+  def f(a: 1, b: 2)
+    p [a, b]
+  end
+
+  f(a: 1, b: 2)
+  h = {:a => 1, :b => 2}
+  f h
+#+END_SRC
+
+#+RESULTS:
+: [1, 2]
+: [1, 2]
+
+*** 返回值
+
+除非使用 return，否则以最后一句的返回值作为函数的返回值
+
+*** 定义带块的方法
+
+#+BEGIN_SRC ruby
+  def myloop
+    while true
+      yield 
+    end
+  end
+
+  i = 0
+  myloop do
+    puts i
+    break if (i += 1) > 3
+  end
+#+END_SRC
+
+#+RESULTS:
+: 0
+: 1
+: 2
+: 3
+
+** 方法的调用
+
+除了正常地指定方法的参数，也可以直接把 Array 和 Hash 值传入
+
+#+BEGIN_SRC ruby
+  def sum(*args)
+    sum = 0
+    args.each { |i| sum += i }
+    sum
+  end
+
+  p sum(1, 2, 3)
+
+  array1 = [1, 2, 3, 4]
+  p sum(*array1)
+#+END_SRC
+
+#+RESULTS:
+: 6
+: 10
+
 * 加载其它 Ruby 文件
 
 #+BEGIN_SRC ruby :tangle foo.rb
