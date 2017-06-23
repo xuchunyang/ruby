@@ -34,7 +34,6 @@ p /a/ =~ "hello"
 - ||
 - ~
 
-
 ** if
 
 #+BEGIN_SRC ruby
@@ -169,17 +168,6 @@ puts "world" unless false
 : 1
 : 2
 : 3
-
-#+BEGIN_SRC ruby
-  3.times do
-    puts "I am learning Ruby."
-  end
-#+END_SRC
-
-#+RESULTS:
-: I am learning Ruby.
-: I am learning Ruby.
-: I am learning Ruby.
 
 * 数组 (Array)
 
@@ -563,3 +551,180 @@ p 1.eql?(1.0)
 #+RESULTS:
 : true
 : false
+
+* do ~ end 和 { ~ }
+
+两者通用，一般建议：
+
+- 跨行时用 do ~ end
+- 单行时用 { ~ }
+
+* 循环
+
+循环可以分为控制结构和方法
+
+| while     | 控制结构 |
+| until     | 控制结构 |
+| for       | 控制结构 |
+| times     | 方法     |
+| each      | 方法     |
+| each_line | 方法     |
+
+循环控制
+
+| break | 结束循环           |
+| next  | 立即进入下一次循环 |
+| redo  | 重新执行本次循环   |
+
+#+BEGIN_SRC ruby
+  (1..3).each do |i|
+    puts i
+    break if i == 2
+  end
+#+END_SRC
+
+#+RESULTS:
+: 1
+: 2
+
+** while
+
+#+BEGIN_SRC ruby
+  sum = 0
+  i = 1
+  while i <= 100
+    sum += i
+    i += 1
+  end
+  puts sum
+#+END_SRC
+
+#+RESULTS:
+: 5050
+
+** until
+
+#+BEGIN_SRC ruby
+  sum = 0
+  i = 1
+  until i > 100
+    sum += i
+    i += 1
+  end
+
+  puts sum
+#+END_SRC
+
+#+RESULTS:
+: 5050
+
+** loop
+
+#+BEGIN_SRC ruby
+  i = 0
+  loop do
+    break if i == 3
+    puts "hi"
+    i += 1
+  end
+#+END_SRC
+
+#+RESULTS:
+: hi
+: hi
+: hi
+
+** for
+
+#+BEGIN_SRC ruby
+  sum = 0
+  for i in 1..100
+    sum += i
+  end
+  puts sum
+#+END_SRC
+
+#+RESULTS:
+: 5050
+
+#+BEGIN_SRC ruby
+  names = [ "Awk", "Ruby", "Python" ]
+  for name in names
+    puts name
+  end
+#+END_SRC
+
+#+RESULTS:
+: Awk
+: Ruby
+: Python
+
+** times
+
+#+BEGIN_SRC ruby
+  3.times do
+    puts "I am learning Ruby."
+  end
+#+END_SRC
+
+#+RESULTS:
+: I am learning Ruby.
+: I am learning Ruby.
+: I am learning Ruby.
+
+块 do ~ end 还可以写成 { ~ }
+
+#+BEGIN_SRC ruby
+  3.times { puts "hi" }
+#+END_SRC
+
+#+RESULTS:
+: hi
+: hi
+: hi
+
+times 还可以知道序号
+
+#+BEGIN_SRC ruby
+  3.times do |i|
+    puts "第 #{i} 次循环"
+  end
+#+END_SRC
+
+#+RESULTS:
+: 第 0 次循环
+: 第 1 次循环
+: 第 2 次循环
+
+或者
+
+#+BEGIN_SRC ruby
+3.times { |i| puts "第 #{i} 次循环" }
+#+END_SRC
+
+#+RESULTS:
+: 第 0 次循环
+: 第 1 次循环
+: 第 2 次循环
+
+** each
+
+#+BEGIN_SRC ruby
+  sum = 0
+  (1..100).each do |i|
+    sum += i
+  end
+  p sum
+#+END_SRC
+
+#+RESULTS:
+: 5050
+
+#+BEGIN_SRC ruby
+  sum = 0
+  (1..100).each {|i| sum += i; i += 1}
+  p sum
+#+END_SRC
+
+#+RESULTS:
+: 5050
