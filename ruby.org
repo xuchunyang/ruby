@@ -59,3 +59,103 @@ p (1 != 2)
 : I am learning Ruby.
 : I am learning Ruby.
 : I am learning Ruby.
+
+* 数组 (Array)
+
+** 初始化数组、访问和修改数组元素、数组长度
+#+BEGIN_SRC ruby
+names = ["李白", "杜甫", "白居易"]
+p names
+print "第一个名字是: ", names[0], "\n"
+
+names[0] = "李商隐"
+p names
+print "第一个名字是: ", names[0], "\n"
+
+names[10] = "陈子昂"
+p names
+
+p names.size
+#+END_SRC
+
+#+RESULTS:
+: ["李白", "杜甫", "白居易"]
+: 第一个名字是: 李白
+: ["李商隐", "杜甫", "白居易"]
+: 第一个名字是: 李商隐
+: ["李商隐", "杜甫", "白居易", nil, nil, nil, nil, nil, nil, nil, "陈子昂"]
+: 11
+
+** 循环一个数组
+
+each 是一个带块 (block) 的方法
+
+#+BEGIN_SRC ruby
+  names = ["李白", "杜甫", "白居易"]
+
+  names.each do | x |
+    puts x
+  end
+#+END_SRC
+
+#+RESULTS:
+: 李白
+: 杜甫
+: 白居易
+
+* 散列 (hash)
+
+** 符号 (Symbol)
+
+Hash 中的索引常用符号或字符串表示
+
+#+BEGIN_SRC ruby
+sym = :foo
+sym2 = :"foo"
+p sym, sym2
+
+p sym.to_s
+p "foo".to_sym
+#+END_SRC
+
+#+RESULTS:
+: :foo
+: :foo
+: "foo"
+: :foo
+
+** 创建和使用 Hash
+
+#+BEGIN_SRC ruby
+info = {:名 => "李白", :字 => "太白", :号 => "青莲居士", :代表作 => ["蜀道难"]}
+p info
+
+p info[:名], info[:字], info[:号], info[:代表作]
+
+info[:代表作] = ["蜀道难", "忆秦娥"]
+p info[:代表作]
+#+END_SRC
+
+#+RESULTS:
+: {:名=>"李白", :字=>"太白", :号=>"青莲居士", :代表作=>["蜀道难"]}
+: "李白"
+: "太白"
+: "青莲居士"
+: ["蜀道难"]
+: ["蜀道难", "忆秦娥"]
+
+** 循环 Hash
+
+#+BEGIN_SRC ruby
+  info = {:名 => "李白", :字 => "太白", :号 => "青莲居士", :代表作 => ["蜀道难", "忆秦娥"]}
+
+  info.each do | key, value |
+    puts "#{key}: #{value}"
+  end
+#+END_SRC
+
+#+RESULTS:
+: 名: 李白
+: 字: 太白
+: 号: 青莲居士
+: 代表作: ["蜀道难", "忆秦娥"]
