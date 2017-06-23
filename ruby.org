@@ -1,0 +1,61 @@
+#+PROPERTY: header-args:ruby :results output
+
+* 控制语句
+** 条件（比较）
+
+#+BEGIN_SRC ruby
+p (1 == 1)
+p (1 == 2)
+p ("Ruby" == "Ruby")
+p ("Ruby" == "Rubies")
+p (1 != 1)
+p (1 != 2)
+#+END_SRC
+
+#+RESULTS:
+: true
+: false
+: true
+: false
+: false
+: true
+
+** if
+
+#+BEGIN_SRC ruby
+  x = 20
+  if x >= 10
+    puts "bigger"
+  else
+    puts "smaller"
+  end
+#+END_SRC
+
+#+RESULTS:
+: bigger
+
+** 循环
+
+#+BEGIN_SRC ruby
+  i = 1
+  while i <= 3
+    puts i
+    i = i + 1
+  end
+#+END_SRC
+
+#+RESULTS:
+: 1
+: 2
+: 3
+
+#+BEGIN_SRC ruby
+  3.times do
+    puts "I am learning Ruby."
+  end
+#+END_SRC
+
+#+RESULTS:
+: I am learning Ruby.
+: I am learning Ruby.
+: I am learning Ruby.
