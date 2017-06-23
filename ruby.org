@@ -185,3 +185,137 @@ p (/ruby/i =~ "I am learning Ruby.")
 #+RESULTS:
 : 小林
 : 林
+
+* 命令行程序
+
+** 参数 ARGV
+
+命令行参数保存在 ARGV 中
+
+#+BEGIN_SRC ruby :tangle print_argv.rb
+# -*- coding: utf-8; -*-
+
+puts "首个参数: #{ARGV[0]}"
+puts "第二个参数: #{ARGV[1]}"
+puts "第三个参数: #{ARGV[2]}"
+#+END_SRC
+
+#+BEGIN_SRC sh
+ruby print_argv.rb 1st 2nd 3rd
+#+END_SRC
+
+#+RESULTS:
+| 首个参数:   | 1st |
+| 第二个参数: | 2nd |
+| 第三个参数: | 3rd |
+
+#+BEGIN_SRC ruby :tangle arg_arith.rb
+x = ARGV[0].to_i
+y = ARGV[1].to_i
+
+puts "#{x} + #{y} = #{ x + y }"
+puts "#{x} - #{y} = #{ x - y }"
+puts "#{x} * #{y} = #{ x * y }"
+puts "#{x} / #{y} = #{ x / y }"
+#+END_SRC
+
+#+BEGIN_SRC sh :results output
+ruby arg_arith.rb 5 3
+#+END_SRC
+
+#+RESULTS:
+: 5 + 3 = 8
+: 5 - 3 = 2
+: 5 * 3 = 15
+: 5 / 3 = 1
+
+** 文件的读取
+
+首先随便创建一个文件：
+
+#+BEGIN_SRC sh :results silent
+cal > cal.txt
+#+END_SRC
+
+*** 一次性读取
+
+然后使用 Ruby 读取这个文件:
+
+#+BEGIN_SRC ruby
+  filename = "cal.txt"
+  file = File.open(filename)
+  text = file.read
+  print text
+  file.close
+#+END_SRC
+
+#+RESULTS:
+:       六月 2017         
+: 日 一 二 三 四 五 六  
+:              1  2  3  
+:  4  5  6  7  8  9 10  
+: 11 12 13 14 15 16 17  
+: 18 19 20 21 22 _2_3 24  
+: 25 26 27 28 29 30     
+:                       
+
+或者直接用 File.read 方法
+
+#+BEGIN_SRC ruby
+  print File.read("cal.txt")
+#+END_SRC
+
+#+RESULTS:
+:       六月 2017         
+: 日 一 二 三 四 五 六  
+:              1  2  3  
+:  4  5  6  7  8  9 10  
+: 11 12 13 14 15 16 17  
+: 18 19 20 21 22 _2_3 24  
+: 25 26 27 28 29 30     
+:                       
+
+*** 一行一行读取
+
+#+BEGIN_SRC ruby
+  filename = "cal.txt"
+  file = File.open(filename)
+  file.each_line do |line|
+    print line
+  end
+  file.close
+#+END_SRC
+
+#+RESULTS:
+:       六月 2017         
+: 日 一 二 三 四 五 六  
+:              1  2  3  
+:  4  5  6  7  8  9 10  
+: 11 12 13 14 15 16 17  
+: 18 19 20 21 22 _2_3 24  
+: 25 26 27 28 29 30     
+:                       
+
+** simple_grep.rb
+
+#+BEGIN_SRC ruby :tangle simple_grep.rb
+  pattern = Regexp.new(ARGV[0])
+  filename = ARGV[1]
+
+  file = File.open(filename)
+  file.each_line do |line|
+    if pattern =~ line
+      print line
+    end
+  end
+  file.close
+#+END_SRC
+
+#+BEGIN_SRC sh :results output
+ruby simple_grep.rb line simple_grep.rb
+#+END_SRC
+
+#+RESULTS:
+: file.each_line do |line|
+:   if pattern =~ line
+:     print line
