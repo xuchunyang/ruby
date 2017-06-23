@@ -366,3 +366,47 @@ pp info
 
 #+RESULTS:
 : {:名=>"李白", :字=>"太白", :号=>"青莲居士", :代表作=>["蜀道难", "忆秦娥"]}
+
+* 变量
+
+#+BEGIN_SRC ruby
+    FOO_VERSION = "0.1"             # 常量
+    $x = 0                          # 全局
+    x = 0                           # 局部变量
+
+    p ARGV
+    p RUBY_VERSION
+    p __FILE__
+    p __LINE__
+#+END_SRC
+
+#+RESULTS:
+: []
+: "2.3.3"
+: "-"
+: 8
+
+** 多重赋值
+
+#+BEGIN_SRC ruby
+  def log() puts "$a = #{$a}, $b = #{$b}"; end
+
+  $a, $b = 1, 2
+  log
+
+  $a, $b = $b, $a
+  log
+
+  a, b = [1, 2, 3, 4]
+  puts "a = #{a}, b = #{b}"
+
+  a, (b, c), d = [1, [2, 3], 4]
+  print a, b, c, d, "\n"
+  #+END_SRC
+
+#+RESULTS:
+: $a = 1, $b = 2
+: $a = 2, $b = 1
+: a = 1, b = 2
+: 1234
+
