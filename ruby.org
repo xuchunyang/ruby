@@ -10,6 +10,7 @@ p ("Ruby" == "Ruby")
 p ("Ruby" == "Rubies")
 p (1 != 1)
 p (1 != 2)
+p /a/ =~ "hello"
 #+END_SRC
 
 #+RESULTS:
@@ -19,6 +20,20 @@ p (1 != 2)
 : false
 : false
 : true
+: nil
+
+*** Ruby 的真假值
+
+#+NAME: Ruby 的真假值
+| 假 | false, nil                     |
+| 真 | 除了 flase 和 nil 外的所有对象 |
+
+*** 逻辑运算（与、或、非）
+
+- &&
+- ||
+- ~
+
 
 ** if
 
@@ -33,6 +48,112 @@ p (1 != 2)
 
 #+RESULTS:
 : bigger
+
+** unless
+
+#+BEGIN_SRC ruby
+puts "Hello, Ruby!" unless nil
+#+END_SRC
+
+#+RESULTS:
+: Hello, Ruby!
+
+注意 if 和 unless 都可以作为修饰符
+
+#+BEGIN_SRC ruby
+puts "Hello" if true
+puts "world" unless false
+#+END_SRC
+
+#+RESULTS:
+: Hello
+: world
+
+** case
+
+#+NAME: case.rb
+#+BEGIN_SRC ruby
+  tags = [ "a", "img", "pre"]
+  tags.each do |tagname|
+    case tagname
+    when "p", "a", "i", "b", "blockquote"
+      puts "#{tagname} has child."
+    when "img", "br"
+      puts "#{tagname} has no child."
+    else
+      puts "#{tagname} cannot be used."
+    end
+  end
+#+END_SRC
+
+#+RESULTS: case.rb
+: a has child.
+: img has no child.
+: pre cannot be used.
+
+#+NAME: case_class.rb
+#+BEGIN_SRC ruby
+  array = [ "a", 1, nil ]
+  array.each do |item|
+    case item
+    when String
+      puts "Item is a String"
+    when Numeric
+      puts "Item is a Number"
+    else
+      puts "Item is something."
+    end
+  end
+#+END_SRC
+
+#+RESULTS: case_class.rb
+: Item is a String
+: Item is a Number
+: Item is something.
+
+#+NAME: case_regexp.rb
+#+BEGIN_SRC ruby
+  File.read("/var/mail/xcy").each_line do |line|
+    case line
+    when /^From:/i
+      puts "发现寄件人信息"
+    when /^To:/i
+      puts "发现收件人信息"
+    when /^Subject:/i
+      puts "发现主题信息"
+    when /^$/
+      puts "头部解析完毕"
+      exit
+    else
+    end
+  end
+#+END_SRC
+
+#+RESULTS: case_regexp.rb
+: 发现收件人信息
+: 发现主题信息
+: 发现寄件人信息
+: 头部解析完毕
+
+*** case-when 中的比较 ~===~
+
+~===~ 表示范围更广的相等，有三个作用：
+
+1. 跟 == 相同
+2. 跟 =~ 相同
+3. 判断右边的对象是不是属于左边的类
+
+#+BEGIN_SRC ruby
+  p "a" === "a"
+  # p "a" === String
+  p String === "a"
+  p /a/ === "a love letter"
+#+END_SRC
+
+#+RESULTS:
+: true
+: true
+: true
 
 ** 循环
 
