@@ -1226,3 +1226,109 @@ protected 和 private 类似，只是可以在类定义内部用 foo.func
 #+RESULTS:
 : 2
 : [171, 170]
+
+** 类方法
+
+#+BEGIN_SRC ruby
+  class << String
+    def hello
+      p "这是一个类方法"
+    end
+  end
+
+  String.hello
+#+END_SRC
+
+#+RESULTS:
+: "这是一个类方法"
+
+#+BEGIN_SRC ruby
+  module ClassMethods
+    def hello
+      p "这是一个类方法"
+    end
+  end
+
+  module InstanceMethods
+    def world
+      p "这是一个实例方法"
+    end
+  end
+
+  class MyClass
+    extend ClassMethods
+    include InstanceMethods
+  end
+
+  MyClass.hello
+  MyClass.new.world
+#+END_SRC
+
+#+RESULTS:
+: "这是一个类方法"
+: "这是一个实例方法"
+
+* 模块 (Module)
+
+模块与类的不同在于：
+
+- 模块没有实例
+- 模块不能继承
+
+** 模块的用处
+
+*** 提供命名空间 (Namespace)
+
+  #+BEGIN_SRC ruby
+  p FileTest.exist?(".")
+  p FileTest.size(".")
+  #+END_SRC
+
+  #+RESULTS:
+  : true
+  : 272
+
+  #+BEGIN_SRC ruby
+  p Math::PI
+
+  include Math
+  p PI
+  #+END_SRC
+
+  #+RESULTS:
+  : 3.141592653589793
+  : 3.141592653589793
+
+*** 扩展 Class (Mix-in)
+
+定义类时可以 include 一个模块，直接把模块的常量和方法引入。
+
+** 创建模块
+
+注意公开的方法需用 ~module_function~ 指定。
+
+#+BEGIN_SRC ruby
+  module HelloModule
+    Version = "1.0"
+
+    def hello(name)
+      puts "Hello, #{name}!"
+    end
+
+    module_function :hello
+  end
+
+  p HelloModule::Version
+  HelloModule.hello("Alice")
+
+  include HelloModule
+  p Version
+  hello("Tom")
+#+END_SRC
+
+#+RESULTS:
+: "1.0"
+: Hello, Alice!
+: "1.0"
+: Hello, Tom!
+
