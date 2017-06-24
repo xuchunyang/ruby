@@ -1480,3 +1480,231 @@ rescue 不指定异常种类时会捕捉所有的 StandardError 及其子类。
 #+RESULTS:
 : #<RuntimeError: Some error in f1>
 : [nil]
+
+* 块 (Block)
+
+** 定义带块的方法
+
+#+BEGIN_SRC ruby
+  def total(from, to)
+    result = 0
+    from.upto(to) do |num|
+      if block_given?
+        result += yield(num)
+      else
+        result += num
+      end
+    end
+    return result
+  end
+
+  p total(1, 100)
+  p total(1, 100) {|n| n * 2}
+#+END_SRC
+
+#+RESULTS:
+: 5050
+: 10100
+
+** 把块封装成对象 (Proc)
+
+#+BEGIN_SRC ruby
+  hello = Proc.new do |name|
+    puts "Hell, #{name}!"
+  end
+
+  hello.call("World")
+  hello.call("Ruby")
+#+END_SRC
+
+#+RESULTS:
+: Hell, World!
+: Hell, Ruby!
+
+Block 还可以当作参数写入参数表，但它必须在参数表的最后。
+
+#+BEGIN_SRC ruby
+  def total(from, to, &block)
+    total = 0
+    from.upto(to) do |num|
+      if block
+        total += block.call(num)
+      else
+        total += num
+      end
+    end
+    return total
+  end
+
+  p total(1, 100)
+  p total(1, 100) { |n| n * 2 }
+#+END_SRC
+
+#+RESULTS:
+: 5050
+: 10100
+
+Block 还以传递
+
+#+BEGIN_SRC ruby
+  def call_each(ary, &block)
+    ary.each(&block)
+  end
+
+  call_each([1, 2, 3]) do |n|
+    puts "The number is #{n}"
+  end
+#+END_SRC
+
+#+RESULTS:
+: The number is 1
+: The number is 2
+: The number is 3
+
+定义块的临时变量
+
+#+BEGIN_SRC ruby
+  x, y = 0, 0
+  ary = [1, 2, 3]
+  ary.each do |x ;y|
+    y = x
+    p [x, y]
+  end
+
+  p [x, y]
+#+END_SRC
+
+#+RESULTS:
+: [1, 1]
+: [2, 2]
+: [3, 3]
+: [0, 0]
+
+** 用途
+*** 各种循环
+  - Array#each
+  - Array#each_with_index
+  - Hash#each
+  - File#each_line
+  - File#each_byte
+
+  #+BEGIN_SRC ruby
+    ary = [ 1, 2, 3 ]
+    ary.each_with_index do |item, idx|
+      puts "ary[#{idx}] = #{item}"
+    end
+
+    ary.each_with_index { |item, idx|
+      puts "ary[#{idx}] = #{item}"
+    }
+  #+END_SRC
+
+  #+RESULTS:
+  : ary[0] = 1
+  : ary[1] = 2
+  : ary[2] = 3
+  : ary[0] = 1
+  : ary[1] = 2
+  : ary[2] = 3
+
+  #+BEGIN_SRC ruby
+    hash = { 1 => "a", 2 => "b", 3 => "c" }
+    hash.each { |pair|
+      p pair[1]
+    }
+
+    hash.each { |k, v|
+      p v
+    }
+  #+END_SRC
+
+  #+RESULTS:
+  : "a"
+  : "b"
+  : "c"
+  : "a"
+  : "b"
+  : "c"
+
+  #+BEGIN_SRC ruby
+    file = File.open ("/etc/passwd")
+    file.each_line do |line|
+      puts "-" * line.size if line.start_with?("#")
+    end
+    file.close
+  #+END_SRC
+
+  #+RESULTS:
+  #+begin_example
+  ---
+  ----------------
+  ---
+  ----------------------------------------------------------------------------
+  -----------------------------------------------------------------------
+  ------------------
+  --
+  ----------------------------------------------------------------------
+  ------------------
+  ---
+ #+end_example
+
+*** 隐藏常规处理
+
+#+BEGIN_SRC ruby
+  File.open ("/etc/passwd") do |file|
+    file.each_line do |line|
+      puts "-" * line.size if line.start_with?("#")
+    end
+  end
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+---
+----------------
+---
+----------------------------------------------------------------------------
+-----------------------------------------------------------------------
+------------------
+--
+----------------------------------------------------------------------
+------------------
+---
+#+end_example
+
+等价于
+
+#+BEGIN_SRC ruby
+  file = File.open("/etc/passwd")
+  begin
+    file.each_line do |line|
+      puts "-" * line.size if line.start_with?("#")
+    end
+  ensure
+    file.close
+  end
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+---
+----------------
+---
+----------------------------------------------------------------------------
+-----------------------------------------------------------------------
+------------------
+--
+----------------------------------------------------------------------
+------------------
+---
+#+end_example
+
+*** 替换部分算法
+
+#+BEGIN_SRC ruby
+  langs = [ "Ruby", "Awk", "Perl", "C", "Emacs Lisp" ]
+  p langs.sort { |a, b| a.length <=> b.length }
+#+END_SRC
+
+#+RESULTS:
+: ["C", "Awk", "Ruby", "Perl", "Emacs Lisp"]
