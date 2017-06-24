@@ -1332,3 +1332,151 @@ protected 和 private 类似，只是可以在类定义内部用 foo.func
 : "1.0"
 : Hello, Tom!
 
+* 异常处理
+
+#+BEGIN_EXAMPLE
+  begin
+    有可能出现异常
+  rescue => 异常变凉
+    异常处理 
+  ensure
+    无论如何都会执行
+  end
+#+END_EXAMPLE
+
+** rescue
+
+ #+BEGIN_SRC ruby
+   begin
+     File.open "/no/fil"
+   rescue => ex
+     p $!
+     p ex
+     p [ ex.class, ex.message, ex.backtrace ]
+   end
+ #+END_SRC
+
+ #+RESULTS:
+ : #<Errno::ENOENT: No such file or directory @ rb_sysopen - /no/fil>
+ : #<Errno::ENOENT: No such file or directory @ rb_sysopen - /no/fil>
+ : [Errno::ENOENT, "No such file or directory @ rb_sysopen - /no/fil", ["-:2:in `initialize'", "-:2:in `open'", "-:2:in `<main>'"]]
+
+ #+NAME: wc.rb
+ #+BEGIN_SRC ruby :tangle wc.rb :tangle-mode '#o755 :shebang "#!/usr/bin/env ruby"
+   ltotal, wtotal, ctotal = 0, 0, 0
+
+   ARGV.each do |filename|
+     begin
+       l, w, c = 0, 0, 0
+       file = File.open(filename)
+       file.each_line do |line|
+         l += 1
+         ltotal += 1
+         w += line.split(/\s+/).size
+         wtotal += line.split(/\s+/).size
+         c += line.size
+         ctotal += line.size
+       end
+       file.close
+       puts "#{l}\t#{w}\t#{c}\t#{filename}"
+     rescue => ex
+       puts ex.message
+     end
+   end
+
+   puts "#{ltotal}\t#{wtotal}\t#{ctotal}"
+ #+END_SRC
+
+ #+BEGIN_SRC sh :results output
+   ./wc.rb /etc/passwd /no/file /etc/hosts
+   # wc /etc/passwd /etc/hosts
+ #+END_SRC
+
+ #+RESULTS:
+ : 86	243	5253	/etc/passwd
+ : No such file or directory @ rb_sysopen - /no/file
+ : 15	50	362	/etc/hosts
+ : 101	293	5615
+
+
+如果出现异常，rescue 的返回值时 rescue 后面的结果。rescue 作为修饰符
+
+#+BEGIN_SRC ruby :results value
+  # begin
+  #   foo
+  # rescue
+  #   123
+  # end
+
+  foo rescue 1234
+#+END_SRC
+
+#+RESULTS:
+: 1234
+
+** ensure
+
+#+BEGIN_SRC ruby
+  def copy(from, to)
+    src = File.open(from)
+    begin
+      dst = File.open(to, "w")
+      data = src.read
+      dst.write(data)
+      dat.close
+    ensure
+      src.close
+    end
+  end
+#+END_SRC
+
+
+** 明确指定处理的异常
+
+rescue 不指定异常种类时会捕捉所有的 StandardError 及其子类。
+
+#+BEGIN_SRC ruby
+  div = 0
+  begin
+    p 1 / div
+    File.open "/no/file"
+  rescue ZeroDivisionError => ex
+    puts ex.message
+    div += 1
+    retry
+  rescue Errno::ENOENT => ex
+    puts ex.message
+  end
+#+END_SRC
+
+#+RESULTS:
+: divided by 0
+: 1
+: No such file or directory @ rb_sysopen - /no/file
+
+** 抛出异常
+
+#+BEGIN_SRC ruby
+  class MyError < StandardError
+  end
+
+  def f1
+    raise "Some error in f1"
+  end
+
+  def f2
+    raise MyError
+  end
+
+  f1 rescue p $!
+
+  begin
+    f2
+  rescue MyError
+    p [$1]
+  end
+#+END_SRC
+
+#+RESULTS:
+: #<RuntimeError: Some error in f1>
+: [nil]
