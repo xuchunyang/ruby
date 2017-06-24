@@ -696,22 +696,29 @@ pp info
 
 * 变量
 
-#+BEGIN_SRC ruby
-    FOO_VERSION = "0.1"             # 常量
-    $x = 0                          # 全局
-    x = 0                           # 局部变量
+** 变量有 4 类
 
-    p ARGV
-    p RUBY_VERSION
-    p __FILE__
-    p __LINE__
-#+END_SRC
+   | 局部变量 | 以字母或下划线开头 |
+   | 全局变量 | 以 $ 开头          |
+   | 实例变量 | 以 @ 开头          |
+   | 类变量   | 以 @@ 开头         |
 
-#+RESULTS:
-: []
-: "2.3.3"
-: "-"
-: 8
+ #+BEGIN_SRC ruby
+     FOO_VERSION = "0.1"             # 常量
+     $x = 0                          # 全局
+     x = 0                           # 局部变量
+
+     p ARGV
+     p RUBY_VERSION
+     p __FILE__
+     p __LINE__
+ #+END_SRC
+
+ #+RESULTS:
+ : []
+ : "2.3.3"
+ : "-"
+ : 8
 
 ** 多重赋值
 
@@ -946,3 +953,210 @@ times 还可以知道序号
 
 #+RESULTS:
 : 5050
+
+* 类 (Class)
+
+类和实例的关系： 
+
+#+BEGIN_SRC ruby
+  ary = []
+  str = "Hello, Ruby!"
+
+  p ary.class
+  p str.class
+
+  p ary.instance_of?(Array)
+  p ary.instance_of?(String)
+  p str.instance_of?(String)
+  p str.instance_of?(Array)
+#+END_SRC
+
+#+RESULTS:
+: Array
+: String
+: true
+: false
+: true
+: false
+
+is_a? 和 instance_of? 的不同和相同
+
+#+BEGIN_SRC ruby
+str = "This is a string."
+p str.instance_of?(String)
+p str.instance_of?(Object)
+p str.is_a?(String)
+p str.is_a?(Object)
+#+END_SRC
+
+#+RESULTS:
+: true
+: false
+: true
+: true
+
+** 类的定义
+
+实例变量和实例方法
+
+#+BEGIN_SRC ruby
+  class HelloWorld
+    def initialize(myname = "Ruby")
+      @name = myname
+    end
+
+    def hello
+      puts "Hello, Wolrd!  I am #{@name}"
+    end
+
+    def bar
+      @foo
+    end
+  end
+
+  bob   = HelloWorld.new("Bob")
+  alice = HelloWorld.new("Alice")
+  ruby  = HelloWorld.new
+
+  bob.hello
+  alice.hello
+  ruby.hello
+  p ruby.bar
+#+END_SRC
+
+#+RESULTS:
+: Hello, Wolrd!  I am Bob
+: Hello, Wolrd!  I am Alice
+: Hello, Wolrd!  I am Ruby
+: nil
+
+*** 存储器
+
+可以手动编写：
+
+#+BEGIN_SRC ruby
+  class HelloWorld
+    def initialize(name = "ruby")
+      @name = name
+    end
+
+    def hello
+      puts "Hello World!  My name is #{@name}"
+    end
+
+    def name
+      @name
+    end
+
+    def name=(value)
+      @name = value
+    end
+  end
+
+  bob = HelloWorld.new("Bob")
+  bob.hello
+  p bob.name
+  bob.name = "Bobby"
+  p bob.name
+  bob.hello
+#+END_SRC
+
+#+RESULTS:
+: Hello World!  My name is Bob
+: "Bob"
+: "Bobby"
+: Hello World!  My name is Bobby
+
+或者用
+
+| attr_reader :name   | 读     |
+| attr_writer :name   | 写     |
+| attr_accessor :name | 读和写 |
+
+#+BEGIN_SRC ruby
+  class Cat
+    attr_accessor :name
+  end
+
+  tom = Cat.new
+  tom.name = "Tom"
+  p tom.name
+#+END_SRC
+
+#+RESULTS:
+: "Tom"
+
+*** public, private, protected
+
+默认是 public，private 指对象无法使用 obj.func
+
+#+BEGIN_SRC ruby
+  class AccTest
+    def pub
+      puts "pub"
+    end
+
+    public :pub
+
+    def priv
+      puts "priv"
+    end
+
+    private :priv
+
+    def pub2
+      # 错误
+      # self.priv
+      priv
+      pub
+      self.pub
+      puts "pub2"
+    end
+  end
+
+  acc = AccTest.new
+  acc.pub
+  acc.pub2
+  # acc.priv
+#+END_SRC
+
+#+RESULTS:
+: pub
+: priv
+: pub
+: pub
+: pub2
+
+protected 和 private 类似，只是可以在类定义内部用 foo.func
+
+#+BEGIN_SRC ruby
+  class Point
+    attr_accessor :x, :y
+    protected :x=, :y=
+    def initialize(x = 0, y = 0)
+      @x, @y = x, y
+    end
+
+    def swap(other)
+      tmp_x, tmp_y = @x, @y
+      @x, @y = other.x, other.y
+      other.x, other.y = tmp_x, tmp_y
+    end
+  end
+
+  p0 = Point.new
+  p1 = Point.new(3, 4)
+
+  p [ p0.x, p0.y ]
+  p [ p1.x, p1.y ]
+
+  p0.swap(p1)
+  p [ p0.x, p0.y ]
+  p [ p1.x, p1.y ]
+#+END_SRC
+
+#+RESULTS:
+: [0, 0]
+: [3, 4]
+: [3, 4]
+: [0, 0]
