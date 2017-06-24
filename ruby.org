@@ -1160,3 +1160,69 @@ protected 和 private 类似，只是可以在类定义内部用 foo.func
 : [3, 4]
 : [3, 4]
 : [0, 0]
+
+** 在原有类的基础上添加方法
+
+#+BEGIN_SRC ruby
+  str = "Hello World!"
+  p str.methods.size
+
+  class String
+    def count_word
+      split(/\s+/).size
+    end
+  end
+
+  p str.methods.size
+
+  p str.count_word
+#+END_SRC
+
+#+RESULTS:
+: 170
+: 171
+: 2
+
+** 继承
+
+#+BEGIN_SRC ruby
+  class RingArray < Array
+    def [](i)
+      idx = i % size
+      super idx
+    end
+  end
+
+  ary = RingArray[1, 2, 3]
+  for i in 0..5
+    p ary[i]
+  end
+#+END_SRC
+
+#+RESULTS:
+: 1
+: 2
+: 3
+: 1
+: 2
+: 3
+
+** 单例类
+
+#+BEGIN_SRC ruby
+  str = "Hello, World!"
+
+  class << str
+    def count_word
+      split(/\s+/).size
+    end
+  end
+
+  p str.count_word
+
+  p [str.methods.size, "".methods.size]
+#+END_SRC
+
+#+RESULTS:
+: 2
+: [171, 170]
