@@ -1708,3 +1708,151 @@ Block 还以传递
 
 #+RESULTS:
 : ["C", "Awk", "Ruby", "Perl", "Emacs Lisp"]
+
+* String
+
+** 创建 String
+
+单双引号的不同：
+
+#+BEGIN_SRC ruby
+p "Hello Ruby-#{RUBY_VERSION}!"
+p 'Hello Ruby-#{RUBY_VERSION}!'
+#+END_SRC
+
+#+RESULTS:
+: "Hello Ruby-2.4.1!"
+: "Hello Ruby-\#{RUBY_VERSION}!"
+
+但字符串中包括引号时，除了转义，还可以用 %Q, %q
+
+#+BEGIN_SRC ruby
+p %Q{Ruby String 可以用 "" 和 '' 创建 - #{RUBY_VERSION}}
+p %q{Ruby String 可以用 "" 和 '' 创建 - #{RUBY_VERSION}}
+#+END_SRC
+
+#+RESULTS:
+: "Ruby String 可以用 \"\" 和 '' 创建 - 2.4.1"
+: "Ruby String 可以用 \"\" 和 '' 创建 - \#{RUBY_VERSION}"
+
+Here Document <<EOF ... EOF
+
+#+BEGIN_SRC ruby
+puts <<EOF
+hello, Ruby-#{RUBY_VERSION}!
+
+如何在 Ruby 中创建字符串：
+
+- "Ruby"
+- 'Ruby'
+- %Q{Ruby}
+- %q{Ruby}
+- <<EOF ... EOF
+EOF
+#+END_SRC
+
+#+RESULTS:
+: hello, Ruby-2.4.1!
+: 
+: 如何在 Ruby 中创建字符串：
+: 
+: - "Ruby"
+: - 'Ruby'
+: - %Q{Ruby}
+: - %q{Ruby}
+: - <<EOF ... EOF
+
+Here Document <<~EOF ... EOF
+
+#+BEGIN_SRC ruby
+  str = <<~EOF
+      Hello
+      RUBY
+      #{RUBY_VERSION}
+      .
+      EOF
+  puts str
+#+END_SRC
+
+#+RESULTS:
+: Hello
+: RUBY
+: 2.4.1
+: .
+
+和 Shell 类似，Ruby 也支持 ~`command`~ 获得命令的输出。Emacs Lisp 中的 ~shell-command-to-string~ 也是如此：
+
+#+BEGIN_SRC ruby
+puts `pwd`
+#+END_SRC
+
+#+RESULTS:
+: /Users/xcy/src/ruby
+
+** 链接 String
+
++, concat, <<
+
+#+BEGIN_SRC ruby
+puts("Hello" + " World!")
+#+END_SRC
+
+#+RESULTS:
+: Hello World!
+
+#+BEGIN_SRC ruby
+  str1 = "hello"
+  str2 = "world"
+  str3 = str1 + str2
+
+  p [str1, str2, str3]
+
+  # str1 << str2
+  str1.concat(str2)
+
+  p [str1, str2, str3]
+#+END_SRC
+
+#+RESULTS:
+: ["hello", "world", "helloworld"]
+: ["helloworld", "world", "helloworld"]
+
+** 编码问题
+
+Ruby 默认使用 UTF-8 编码
+
+#+BEGIN_SRC ruby
+p "0x%X" % "a".ord
+p "0x%X" % "汉".ord
+#+END_SRC
+
+#+RESULTS:
+: "0x61"
+: "0x6C49"
+
+** 分割 String
+
+#+BEGIN_SRC ruby
+p `pwd`.split("/")
+p `pwd`.split(/\//)
+#+END_SRC
+
+#+RESULTS:
+: ["", "Users", "xcy", "src", "ruby\n"]
+: ["", "Users", "xcy", "src", "ruby\n"]
+
+** 清理 String
+
+| chop  | 去掉最后一个字符 |
+| chomp |                  |
+
+#+BEGIN_SRC ruby
+  p `pwd`
+  p `pwd`.chop
+  p `pwd`.chomp
+#+END_SRC
+
+#+RESULTS:
+: "/Users/xcy/src/ruby\n"
+: "/Users/xcy/src/ruby"
+: "/Users/xcy/src/ruby"
