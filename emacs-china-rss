@@ -1,0 +1,17 @@
+#!/usr/bin/env ruby
+# -*- coding: utf-8; -*-
+
+# <link rel="alternate" type="application/rss+xml" title="最新帖子" href="https://emacs-china.org/posts.rss" />
+# <link rel="alternate" type="application/rss+xml" title="最新主题" href="https://emacs-china.org/latest.rss" />
+
+require 'rss'
+require 'open-uri'
+
+url = 'https://emacs-china.org/latest.rss'
+open(url) do |rss|
+  feed = RSS::Parser.parse(rss)
+  puts "Title: #{feed.channel.title}"
+  feed.items.each do |item|
+    puts "Item: #{item.title}"
+  end
+end
