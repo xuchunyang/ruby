@@ -6,7 +6,7 @@
 
 def cowsay
   # TODO: Need to fill to 40 columns first
-  lines = $stdin.read.strip.lines.map(&:strip)
+  lines = $stdin.read.rstrip.lines.map(&:rstrip)
   w = lines.map(&:size).max
   s = ''
   case lines.size
