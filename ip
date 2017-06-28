@@ -1,0 +1,17 @@
+#!/usr/bin/env ruby
+# -*- coding: utf-8; -*-
+
+#
+# 查询 Public IP 和相应的地理位置.
+#
+# Usage
+# $ ./ip
+# $ ./ip example.com
+
+require 'open-uri'
+require 'ipaddr'
+
+url = 'http://ip.cn'
+url << "?ip=#{ARGV[0]}" if ARGV[0]
+
+print open(url, 'User-Agent' => 'curl/7.54.0').read
