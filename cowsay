@@ -1,0 +1,46 @@
+#!/usr/bin/env ruby
+
+#
+# Basic cowsay(1) clone.
+#
+
+def cowsay
+  # TODO: Need to fill to 40 columns first
+  lines = $stdin.read.strip.lines.map(&:strip)
+  w = lines.map(&:size).max
+  s = ''
+  case lines.size
+  when 1
+    s << format(" %s \n", '_' * (w + 2))
+    s << format("< %s >\n", lines[0])
+    s << format(" %s \n", '-' * (w + 2))
+  when 2
+    s << format(" %s \n", '_' * (w + 2))
+    s << format("/ %s \\\n", lines[0].ljust(w))
+    s << format("\\ %s /\n", lines[1].ljust(w))
+    s << format(" %s \n", '-' * (w + 2))
+  else
+    s << format(" %s \n", '_' * (2 + w))
+    lines.each_with_index do |line, idx|
+      case idx
+      when 0
+        s << format("/ %s \\\n", line.ljust(w))
+      when 0..(line.size - 1)
+        s << format("| %s |\n", line.ljust(w))
+      when lines.size - 1
+        s << format("\\ %s /\n", line.ljust(w))
+      end
+    end
+    s << format(" %s \n", '-' * (2 + w))
+  end
+  print s
+  puts %q{
+        \   ^__^
+         \  (oo)\_______
+            (__)\       )\/\
+                ||----w |
+                ||     ||
+}
+end
+
+cowsay
