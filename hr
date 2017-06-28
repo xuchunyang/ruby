@@ -1,0 +1,13 @@
+#!/usr/bin/env ruby
+
+# <hr>
+
+require 'curses'
+
+Curses.init_screen
+
+rep = ARGV.join
+rep = '-' if rep.empty?
+
+w = Curses.cols
+puts (rep * w)[0, w]
