@@ -1,0 +1,29 @@
+#!/usr/bin/env ruby
+# -*- coding: utf-8; -*-
+
+#
+# 有道词典
+#
+
+require 'uri'
+require 'net/http'
+require 'json'
+require 'pp'
+
+def youdao(query)
+  form = [['keyfrom', 'YouDaoCV'],
+          ['key', '659600698'],
+          ['type', 'data'],
+          ['doctype', 'json'],
+          ['version', '1.1']]
+  form << ['q', query]
+  uri = URI('http://fanyi.youdao.com/openapi.do?' + URI.encode_www_form(form))
+  hash = JSON.parse(Net::HTTP.get(uri))
+  pp hash
+end
+
+if ARGV.empty?
+  puts 'Usage: ./youdao WORD'
+else
+  youdao(ARGV[0])
+end
