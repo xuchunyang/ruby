@@ -1,0 +1,22 @@
+#!/usr/bin/env ruby
+
+# https://github.com/blackwinter/ruby-filemagic
+require 'filemagic'
+
+def foo(dir)
+  Dir.open(dir) do |d|
+    d.each do |filename|
+      next if ['.', '..'].include?(filename)
+      filename = File.expand_path(filename, dir)
+      if FileTest.directory? filename
+        foo filename
+      else
+        FileMagic.open do |fm|
+          puts filename + ' - ' + fm.file(filename, true)
+        end
+      end
+    end
+  end
+end
+
+foo('.')
