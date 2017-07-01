@@ -8,10 +8,11 @@ def find(path, regexp)
   Dir.open(path) do |dir|
     dir.each do |name|
       next if ['.', '..'].include?(name)
+      name = File.expand_path(name, path)
       if FileTest.directory?(name)
         find(name, regexp)
       elsif regexp =~ name
-        puts File.expand_path(name, path)
+        puts name
       end
     end
   end
